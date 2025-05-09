@@ -1,0 +1,10 @@
+INSERT INTO person.users (user_id, user_name, user_email, user_password, user_handphone, created_on, location_id) VALUES (100, 'frans', 'accorti@gmail.com', NULL, '011-4988260', '2025-05-06 23:01:17.889401', 1400);
+INSERT INTO person.users (user_id, user_name, user_email, user_password, user_handphone, created_on, location_id) VALUES (101, 'commi', 'afonso@gmail.com', NULL, '(11) 555-7647', '2025-05-06 23:01:17.889401', 1500);
+INSERT INTO person.users (user_id, user_name, user_email, user_password, user_handphone, created_on, location_id) VALUES (102, 'alfki', 'anders@gmail.com', NULL, '030-0074321', '2025-05-06 23:01:17.889401', 1700);
+INSERT INTO person.users (user_id, user_name, user_email, user_password, user_handphone, created_on, location_id) VALUES (103, 'tortu', 'angelpaolino@gmail.com', NULL, '(5) 555-2933', '2025-05-06 23:01:17.889401', 1800);
+INSERT INTO person.users (user_id, user_name, user_email, user_password, user_handphone, created_on, location_id) VALUES (104, 'bsbev', 'ashworth@gmail.com', NULL, '(171) 555-1212', '2025-05-06 23:01:17.889401', 2400);
+INSERT INTO person.users (user_id, user_name, user_email, user_password, user_handphone, created_on, location_id) VALUES (105, 'quede', 'batista@gmail.com', NULL, '(21) 555-4252', '2025-05-06 23:01:17.889401', 2500);
+INSERT INTO person.users (user_id, user_name, user_email, user_password, user_handphone, created_on, location_id) VALUES (106, 'islat', 'bennett@gmail.com', NULL, '(198) 555-8888', '2025-05-06 23:01:17.889401', 2700);
+INSERT INTO person.users (user_id, user_name, user_email, user_password, user_handphone, created_on, location_id) VALUES (107, 'bergs', 'berglund@gmail.com', NULL, '0921-12 34 65', '2025-05-06 23:01:17.889401', 1800);
+
+SELECT pg_catalog.setval('person.users_user_id_seq', 190, true);
