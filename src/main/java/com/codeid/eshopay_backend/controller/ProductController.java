@@ -166,7 +166,7 @@ public ResponseEntity<?> updateMultipart(Long id, productDto dto, MultipartFile 
 
     } catch (Exception e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(Collections.singletonMap("error", e.getMessage()));
+            .body(Collections.singletonMap("error", e.getMessage()));
     }
 }
 

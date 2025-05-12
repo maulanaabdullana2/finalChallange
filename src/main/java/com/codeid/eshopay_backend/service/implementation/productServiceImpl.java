@@ -95,6 +95,7 @@ public class productServiceImpl implements productService {
         product.setUnitsOnOrder(entity.getUnitsOnOrder());
         product.setReorderLevel(entity.getReorderLevel());
         product.setDiscontinued(entity.getDiscontinued());
+        product.setPhoto(entity.getPhoto());
 
         product = this.productRepository.save(product);
 
