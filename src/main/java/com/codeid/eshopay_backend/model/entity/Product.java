@@ -55,6 +55,10 @@ public class Product extends AbstractEntity {
     @Column (name = "discontinued")
     public Boolean discontinued;
 
+    //photo
+    @Column(name = "photo")
+    public String photo;
+
 }
 
 

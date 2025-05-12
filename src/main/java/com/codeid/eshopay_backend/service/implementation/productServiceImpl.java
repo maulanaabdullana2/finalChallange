@@ -32,7 +32,9 @@ public class productServiceImpl implements productService {
                 product.getUnitsInStock(),
                 product.getUnitsOnOrder(),
                 product.getReorderLevel(),
-                product.getDiscontinued());
+                product.getDiscontinued(),
+                product.getPhoto()
+                );
     }
 
     private Product mapToEntity(productDto productDto) {
@@ -44,7 +46,9 @@ public class productServiceImpl implements productService {
                 productDto.getUnitsInStock(),
                 productDto.getUnitsOnOrder(),
                 productDto.getReorderLevel(),
-                productDto.getDiscontinued());
+                productDto.getDiscontinued(),
+                productDto.getPhoto()
+                );
     }
 
     @Override

@@ -28,4 +28,6 @@ public class productDto {
     private Long reorderLevel;
 
     private Boolean discontinued;
+    
+    private String photo;
 }
