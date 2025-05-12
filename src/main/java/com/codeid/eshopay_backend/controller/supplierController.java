@@ -41,7 +41,7 @@ public class supplierController extends BaseCrudController<supplierDto, Long> {
         } catch (Exception e) {
             ApiResponse<supplierDto> errorResponse = new ApiResponse<>(
                 "error",
-                "Failed to create supplier: " + e.getMessage(),
+                e.getMessage(),
                 null
             );
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
@@ -60,7 +60,7 @@ public class supplierController extends BaseCrudController<supplierDto, Long> {
         } catch (Exception e) {
             ApiResponse<Void> errorResponse = new ApiResponse<>(
                     "error",
-                    "Failed to delete supplier: " + e.getMessage(),
+                    e.getMessage(),
                     null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
@@ -79,7 +79,7 @@ public class supplierController extends BaseCrudController<supplierDto, Long> {
         } catch (Exception e) {
             ApiResponse<supplierDto> errorResponse = new ApiResponse<>(
                     "error",
-                    "Failed to retrieve supplier data: " + e.getMessage(),
+                    e.getMessage(),
                     null);
 
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
@@ -120,7 +120,7 @@ public class supplierController extends BaseCrudController<supplierDto, Long> {
         } catch (Exception e) {
             ApiResponse<supplierDto> errorResponse = new ApiResponse<>(
                     "error",
-                    "Failed to update supplier: " + e.getMessage(),
+                    e.getMessage(),
                     null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }

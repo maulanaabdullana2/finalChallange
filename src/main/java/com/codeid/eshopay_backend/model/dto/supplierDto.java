@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class supplierDto {
 
-    public Long shipperId;
+    public Long supplierId;
 
     @Size(max = 40,message = "Length Value must not exceeded than 40" )
     public String companyName;

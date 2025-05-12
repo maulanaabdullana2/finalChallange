@@ -8,7 +8,6 @@ import jakarta.persistence.Version;
 import lombok.Getter;
 import lombok.Setter;
 
-
 @Getter
 @Setter
 @MappedSuperclass
@@ -18,5 +17,5 @@ public abstract class AbstractEntity {
 
     @Version
     @Column(name="modified_date")
-    private Instant modifiedDate;
+    private Instant modifiedDate = Instant.now();
 }

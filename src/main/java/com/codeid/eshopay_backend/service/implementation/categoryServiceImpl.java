@@ -30,6 +30,14 @@ public class categoryServiceImpl implements categoryService {
             );
     }
 
+    public static Category mapToEntity(categoryDto categoryDto){
+        return new Category(
+            categoryDto.getCategoryId(),
+            categoryDto.getCategoryName(),
+            categoryDto.getCategoryDescription()
+            );
+    }
+
     @Override
     public List<categoryDto> findAll() {
         log.debug("Request Fetching Data Categories");

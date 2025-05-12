@@ -13,9 +13,9 @@ import lombok.RequiredArgsConstructor;
 
 
 @Data
-@NoArgsConstructor //empty constructor
-@AllArgsConstructor //semua attribute departmentid & departmentName masuk ke constructor
-@RequiredArgsConstructor // hanya attribute yg diberi annotatsi @NonNull atau private final
+@NoArgsConstructor 
+@AllArgsConstructor 
+@RequiredArgsConstructor
 @Entity
 @Table(name = "categories", schema = "oe")
 public class Category extends AbstractEntity{

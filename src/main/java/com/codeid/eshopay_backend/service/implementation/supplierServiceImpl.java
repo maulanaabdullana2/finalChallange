@@ -31,6 +31,15 @@ public class supplierServiceImpl implements supplierService {
             );
      }
 
+     public static Supplier mapToEntity(supplierDto supplierDto){
+        return new Supplier(
+            supplierDto.getSupplierId(),
+            supplierDto.getCompanyName()
+            );
+    }
+
+
+     
     @Override
     public List<supplierDto> findAll() {
          log.debug("Request Fetching Data Categories");
