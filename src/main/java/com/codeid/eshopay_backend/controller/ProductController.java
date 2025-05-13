@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.codeid.eshopay_backend.model.dto.productDto;
 import com.codeid.eshopay_backend.model.dto.supplierDto;
+import com.codeid.eshopay_backend.model.enumeration.EnumStatus;
 import com.codeid.eshopay_backend.model.response.ApiResponse;
 import com.codeid.eshopay_backend.service.BaseCrudService;
 import com.codeid.eshopay_backend.service.FileStorageService;
@@ -41,7 +42,7 @@ public class ProductController extends BaseMultipartController<productDto, Long>
         List<productDto> supplierList = super.getAll().getBody();
         try {
             ApiResponse<List<productDto>> response = new ApiResponse<>(
-                    "success",
+                    EnumStatus.Succees.toString(),
                     "Product data retrieved successfully",
                     supplierList);
 
@@ -156,7 +157,7 @@ public class ProductController extends BaseMultipartController<productDto, Long>
 
             productDto updatedProduct = productService.update(id, dto);
 
-            ApiResponse<productDto> response = new ApiResponse<>("success", "Product updated", updatedProduct);
+            ApiResponse<productDto> response = new ApiResponse<>(EnumStatus.Succees.toString(), "Product updated", updatedProduct);
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
