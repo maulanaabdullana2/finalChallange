@@ -40,7 +40,7 @@ public class GlobalExceptionHandler {
         
                 ApiError error = new ApiError(
                     HttpStatus.NOT_FOUND,  
-                    "Endpoint not found", 
+                    "Route not found", 
                     Collections.singletonList(exc.getMessage()) 
             );
             

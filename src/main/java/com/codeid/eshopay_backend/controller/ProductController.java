@@ -142,34 +142,27 @@ public class ProductController extends BaseMultipartController<productDto, Long>
     }
 
     @Override
-public ResponseEntity<?> updateMultipart(Long id, productDto dto, MultipartFile file, String description) {
-    try {
-        productDto existingProduct = productService.findById(id);
-        if (existingProduct == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(Collections.singletonMap("error", "Product not found"));
+    public ResponseEntity<?> updateMultipart(Long id, productDto dto, MultipartFile file, String description) {
+        try {
+            productDto existingProduct = productService.findById(id);
+            if (file != null && !file.isEmpty()) {
+                String newFileName = fileStorageService.storeFileWithRandomName(file);
+                dto.setPhoto(newFileName);
+            } else {
+                dto.setPhoto(existingProduct.getPhoto());
+            }
+
+            dto.setProductId(id);
+
+            productDto updatedProduct = productService.update(id, dto);
+
+            ApiResponse<productDto> response = new ApiResponse<>("success", "Product updated", updatedProduct);
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("error", e.getMessage()));
         }
-
-        if (file != null && !file.isEmpty()) {
-            String newFileName = fileStorageService.storeFileWithRandomName(file);
-            dto.setPhoto(newFileName);
-        } else {
-            dto.setPhoto(existingProduct.getPhoto());
-        }
-
-        dto.setProductId(id);
-
-        productDto updatedProduct = productService.update(id, dto);
-
-        ApiResponse<productDto> response = new ApiResponse<>("success", "Product updated", updatedProduct);
-        return ResponseEntity.ok(response);
-
-    } catch (Exception e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body(Collections.singletonMap("error", e.getMessage()));
     }
-}
-
-    
 
 }

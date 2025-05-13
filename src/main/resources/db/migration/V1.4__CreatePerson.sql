@@ -1,3 +1,5 @@
+
+CREATE SEQUENCE person.users_user_id_seq INCREMENT 1;
 CREATE TABLE IF NOT EXISTS person.users
 (
     user_id integer NOT NULL DEFAULT nextval('person.users_user_id_seq'::regclass),
