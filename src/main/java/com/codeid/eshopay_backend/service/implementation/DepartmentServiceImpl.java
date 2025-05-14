@@ -2,7 +2,6 @@ package com.codeid.eshopay_backend.service.implementation;
 
 
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -41,7 +40,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         log.debug("request fetching data departments");
         return this.departmentRepository.findAll()
                 .stream()
-                .map(DepartmentServiceImpl::mapToDto) // untuk ubah tipe data dari department ke departmentDto
+                .map(DepartmentServiceImpl::mapToDto) 
                 .collect(Collectors.toList());
     }
 
