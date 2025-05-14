@@ -6,7 +6,9 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.codeid.eshopay_backend.model.dto.productDto;
+import com.codeid.eshopay_backend.model.entity.Category;
 import com.codeid.eshopay_backend.model.entity.Product;
+import com.codeid.eshopay_backend.model.entity.Supplier;
 import com.codeid.eshopay_backend.repository.productRepository;
 import com.codeid.eshopay_backend.service.productService;
 
@@ -87,8 +89,8 @@ public class productServiceImpl implements productService {
                 .orElseThrow(() -> new EntityNotFoundException("Product not found with id " + id));
 
         product.setProductName(entity.getProductName());
-        product.setCategory(categoryServiceImpl.mapToEntity(entity.getCategory()));
-        product.setSupplier(supplierServiceImpl.mapToEntity(entity.getSupplier()));
+        product.setCategory(new Category(entity.getCategory().getCategoryId(),entity.getCategory().getCategoryName(),entity.getCategory().getCategoryDescription()));
+        product.setSupplier(new Supplier(entity.getSupplier().getSupplierId(),entity.getSupplier().getCompanyName()));
         product.setQuantityPerUnit(entity.getQuantityPerUnit());
         product.setUnitPrice(entity.getUnitPrice());
         product.setUnitsInStock(entity.getUnitsInStock());
