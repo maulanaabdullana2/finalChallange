@@ -1,0 +1,1 @@
+ALTER SEQUENCE oe.products_product_id_seq RESTART WITH 21;
