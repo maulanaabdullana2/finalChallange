@@ -1,5 +1,6 @@
 package com.codeid.eshopay_backend.controller;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -8,10 +9,17 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.codeid.eshopay_backend.model.dto.ProductImageDto;
 import com.codeid.eshopay_backend.model.dto.productDto;
 import com.codeid.eshopay_backend.model.dto.supplierDto;
 import com.codeid.eshopay_backend.model.enumeration.EnumStatus;
@@ -20,6 +28,7 @@ import com.codeid.eshopay_backend.service.BaseCrudService;
 import com.codeid.eshopay_backend.service.FileStorageService;
 import com.codeid.eshopay_backend.service.productService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +47,7 @@ public class ProductController extends BaseMultipartController<productDto, Long>
     }
 
     @Override
+    @Operation(summary = "Get All Department", description = "Fecth all departmetns")
     public ResponseEntity getAll() {
         List<productDto> supplierList = super.getAll().getBody();
         try {
@@ -157,12 +167,64 @@ public class ProductController extends BaseMultipartController<productDto, Long>
 
             productDto updatedProduct = productService.update(id, dto);
 
-            ApiResponse<productDto> response = new ApiResponse<>(EnumStatus.Succees.toString(), "Product updated", updatedProduct);
+            ApiResponse<productDto> response = new ApiResponse<>(EnumStatus.Succees.toString(), "Product updated",
+                    updatedProduct);
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Collections.singletonMap("error", e.getMessage()));
+        }
+    }
+
+    @GetMapping("/{id}/bulk")
+    public ResponseEntity<List<ProductImageDto>> bulkFindAll(@PathVariable Long id) {
+        List<ProductImageDto> productImages = productService.bulkFindAll(id);
+        return new ResponseEntity<>(productImages, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/{id}/bulk")
+    public ResponseEntity<?> createMultipartBulk(@PathVariable Long id,
+            @RequestPart(value = "files", required = false) MultipartFile[] files) {
+        if (files.length == 0) {
+            return ResponseEntity.badRequest().body("Please upload product images");
+        }
+
+        try {
+
+            List<String> filenames = new ArrayList<>();
+
+            for (var file : files) {
+                String filename = fileStorageService.storeFileWithRandomName(file);
+
+                filenames.add(filename);
+            }
+
+            List<ProductImageDto> productImagesDto = productService.bulkCreate(id, files, filenames);
+
+            ApiResponse<List<ProductImageDto>> response = new ApiResponse<>(
+                    EnumStatus.Succees.toString(),
+                    "Product images uploaded successfully",
+                    productImagesDto);
+            return ResponseEntity.ok(response);
+        } catch (Exception ex) {
+            return ResponseEntity.internalServerError()
+                    .body(Collections.singletonMap("error", ex.getMessage()));
+        }
+    }
+    @DeleteMapping("/{productId}/images/{imageId}")
+    public ResponseEntity<?> deleteSingleImage(
+            @PathVariable Long productId,
+            @PathVariable Long imageId) {
+        try {
+            productService.deleteImage(productId, imageId);
+            return ResponseEntity.ok(new ApiResponse<>(
+                    EnumStatus.Succees.toString(),
+                    "Product image deleted successfully",
+                    null));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("error", ex.getMessage()));
         }
     }
 

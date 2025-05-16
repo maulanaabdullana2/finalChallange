@@ -2,10 +2,12 @@ package com.codeid.eshopay_backend.model.dto;
 
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
+@Builder
 public class productDto {
     private Long productId;
     
