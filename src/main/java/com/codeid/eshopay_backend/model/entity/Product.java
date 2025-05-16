@@ -63,8 +63,8 @@ public class Product extends AbstractEntity {
     @Column(name = "photo")
     public String photo;
     
-    @OneToMany(mappedBy = "product")
-    private List<ProductImage> productImages;
+    // @OneToMany(mappedBy = "product")
+    // private List<ProductImage> productImages;
 
 }
 
