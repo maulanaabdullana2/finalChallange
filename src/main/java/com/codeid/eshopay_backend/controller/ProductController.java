@@ -183,7 +183,7 @@ public class ProductController extends BaseMultipartController<productDto, Long>
         return new ResponseEntity<>(productImages, HttpStatus.OK);
     }
 
-    @PostMapping(value = "/{id}/bulk")
+    @PostMapping(value = "/{id}/bulk", consumes = "multipart/form-data")
     public ResponseEntity<?> createMultipartBulk(@PathVariable Long id,
             @RequestPart(value = "files", required = false) MultipartFile[] files) {
         if (files.length == 0) {
