@@ -11,5 +11,4 @@ public interface productService extends BaseCrudService<productDto,Long>  {
      List<ProductImageDto> bulkFindAll(Long id);
      void deleteImage(Long productId, Long imageId);
      List<ProductImageDto> bulkCreate(Long id, MultipartFile[] files, List<String> filenames);
-    
 } 
