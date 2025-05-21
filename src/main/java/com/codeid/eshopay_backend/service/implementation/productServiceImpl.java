@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -49,7 +51,7 @@ public class productServiceImpl implements productService {
                 .build();
     }
 
-    private Product mapToEntity(productDto productDto) {
+    public static Product mapToEntity(productDto productDto) {
         return Product.builder()
                 .productId(productDto.getProductId())
                 .productName(productDto.getProductName())
@@ -191,5 +193,13 @@ public class productServiceImpl implements productService {
         }
         this.productImageRepository.delete(productImage);
     }
+
+    @Override
+    public List<productDto> searchProduct(String productName, String categoryName, Pageable pageable) {
+         return this.productRepository.searchProductsByNameAndCategory(productName, categoryName ,pageable)
+                .stream().map(productServiceImpl::mapToDto).toList();
+    }
+
+
 
 }

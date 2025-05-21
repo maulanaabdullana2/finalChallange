@@ -49,10 +49,10 @@ public class CategoryTest {
         var savedCategory = new Category(1L, "Beverages", "Minuman");
 
         when(categoryRepository.save(category)).thenReturn(savedCategory);
-        var inputDto = categoryServiceImpl.mapToDto(category);
-        var result = categoryService.save(inputDto);
 
-        // ass
+        categoryDto inputDto = categoryServiceImpl.mapToDto(category);
+        categoryDto result = categoryService.save(inputDto);
+
         assertEquals(1L, result.getCategoryId());
         assertEquals("Beverages", result.getCategoryName());
     }
@@ -65,8 +65,8 @@ public class CategoryTest {
 
         when(categoryRepository.findById(1L)).thenReturn(Optional.of(existingCategory));
         when(categoryRepository.save(existingCategory)).thenReturn(updatedCategory);
-        
-        var result = categoryService.update(1L, updateDto);
+
+        categoryDto result = categoryService.update(1L, updateDto);
 
         assertEquals("Minuman Baru", result.getCategoryDescription());
         assertEquals(1L, result.getCategoryId());
@@ -77,7 +77,7 @@ public class CategoryTest {
         Category category = new Category(1L, "Beverages", "Soft drinks, coffees, teas, beers, and ales");
         when(categoryRepository.findById(1L)).thenReturn(Optional.of(category));
 
-        var result = categoryService.findById(1L);
+        categoryDto result = categoryService.findById(1L);
 
         assertEquals(1L, result.getCategoryId());
         assertEquals("Beverages", result.getCategoryName());
@@ -106,5 +106,4 @@ public class CategoryTest {
         verify(categoryRepository, times(1)).findById(1L);
         verify(categoryRepository, times(1)).delete(category);
     }
-
 }

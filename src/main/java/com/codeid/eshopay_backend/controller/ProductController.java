@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -226,6 +227,17 @@ public class ProductController extends BaseMultipartController<productDto, Long>
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Collections.singletonMap("error", ex.getMessage()));
         }
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> getProductByDept(@RequestParam String keyword,String categoryName,Pageable pageable){
+        var employeeDtos = this.productService.searchProduct(keyword,categoryName,pageable);
+        ApiResponse<List> response = new ApiResponse<>(
+            EnumStatus.Succees.toString(),
+            "Product search result",
+            employeeDtos
+        );
+        return ResponseEntity.ok(response);
     }
 
 }
