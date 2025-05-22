@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import com.codeid.eshopay_backend.model.dto.AuthResponseDto;
 import com.codeid.eshopay_backend.model.dto.UserDto;
-import com.codeid.eshopay_backend.model.dto.userResponseDto;
 import com.codeid.eshopay_backend.model.entity.Cart;
 import com.codeid.eshopay_backend.model.entity.User;
 import com.codeid.eshopay_backend.service.UserService;
@@ -26,13 +25,15 @@ public class UserServiceImpl implements UserService {
     private final CartRepsoitory cartRepsoitory;
     private final JwtUtil jwtUtil;
 
-    public static userResponseDto mapDto(User user) {
-        return userResponseDto.builder()
+    public static UserDto mapDto(User user) {
+        return UserDto.builder()
+                // .userEmail(user.getUserEmail())
+                // .userPassword(user.getUserPassword())
                 .userId(user.userId)
                 .build();
     }
 
-    public static User mapToEntity(userResponseDto userDto) {
+    public static User mapToEntity(UserDto userDto) {
         return User.builder()
                 .userId(userDto.getUserId())
                 .build();
@@ -81,7 +82,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public userResponseDto register(UserDto userDto) {
+    public UserDto register(UserDto userDto) {
 
         if (!userDto.getUserPassword().equals(userDto.getConfirmPassword())) {
             throw new RuntimeException("Password and Confirm Password do not match");
@@ -95,8 +96,8 @@ public class UserServiceImpl implements UserService {
         userEntity.setUserPassword(passwordEncoder.encode(userDto.getUserPassword()));
         userEntity.setUserPhone(userDto.getUserPhone());
         User savedUser = userRepository.save(userEntity);
-        // buat cart
         Cart cart = new Cart();
+
         cart.setUser(savedUser);
         cartRepsoitory.save(cart);
 

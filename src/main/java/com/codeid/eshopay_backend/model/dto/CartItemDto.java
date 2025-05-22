@@ -12,5 +12,6 @@ import lombok.NoArgsConstructor;
 public class CartItemDto {
     private Long productId;
     private Long quantity;
-
+    private productDto product;
+    private Long cartItemId;
 }

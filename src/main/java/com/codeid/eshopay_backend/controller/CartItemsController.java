@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codeid.eshopay_backend.model.dto.CartItemDto;
-import com.codeid.eshopay_backend.model.dto.CartItemDtoResponse;
 import com.codeid.eshopay_backend.model.enumeration.EnumStatus;
 import com.codeid.eshopay_backend.model.response.ApiResponse;
 import com.codeid.eshopay_backend.security.UserPrincipal;
@@ -40,13 +39,13 @@ public class CartItemsController extends BaseCrudController<CartItemDto, Long> {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<CartItemDtoResponse> addCartItem(@RequestBody CartItemDto cartItemDto,
+    public ResponseEntity<CartItemDto> addCartItem(@RequestBody CartItemDto cartItemDto,
             Authentication authentication) {
         try {
             UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
             Long userId = userPrincipal.getId();
 
-            CartItemDtoResponse cart = cartItemsService.addCartItem(userId, cartItemDto.getProductId(),
+            CartItemDto cart = cartItemsService.addCartItem(userId, cartItemDto.getProductId(),
                     cartItemDto.getQuantity());
             return ResponseEntity.ok(cart);
         } catch (RuntimeException e) {
@@ -59,7 +58,7 @@ public class CartItemsController extends BaseCrudController<CartItemDto, Long> {
         try {
             UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
             Long userId = userPrincipal.getId();
-            List<CartItemDtoResponse> cartItems = cartItemsService.getAllCartItemsByUser(userId);
+            List<CartItemDto> cartItems = cartItemsService.getAllCartItemsByUser(userId);
             ApiResponse apiResponse = new ApiResponse<>(
                     EnumStatus.Succees.toString(),
                     "Cart items retrieved successfully",
@@ -80,8 +79,8 @@ public class CartItemsController extends BaseCrudController<CartItemDto, Long> {
             UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
             Long userId = userPrincipal.getId();
 
-            CartItemDtoResponse cartItem = cartItemsService.getCartByIdAndUserId(id, userId);
-            ApiResponse<CartItemDtoResponse> apiResponse = new ApiResponse<>(
+            CartItemDto cartItem = cartItemsService.getCartByIdAndUserId(id, userId);
+            ApiResponse<CartItemDto> apiResponse = new ApiResponse<>(
                     EnumStatus.Succees.toString(),
                     "Cart item found",
                     cartItem);

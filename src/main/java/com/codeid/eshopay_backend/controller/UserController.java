@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.codeid.eshopay_backend.model.dto.AuthResponseDto;
 import com.codeid.eshopay_backend.model.dto.UserDto;
-import com.codeid.eshopay_backend.model.dto.userResponseDto;
 import com.codeid.eshopay_backend.model.response.ApiResponse;
 import com.codeid.eshopay_backend.service.UserService;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,15 +43,15 @@ public ResponseEntity<ApiResponse<AuthResponseDto>> login(@RequestBody UserDto u
 @PostMapping("/register")
 public ResponseEntity Register (@RequestBody UserDto userDto) {
     try {
-         userResponseDto response = userService.register(userDto);
-        ApiResponse<userResponseDto> successResponse = new ApiResponse<>(
+         UserDto response = userService.register(userDto);
+        ApiResponse<UserDto> successResponse = new ApiResponse<>(
             "success",
             "Registration successful",
             response
         );
         return ResponseEntity.ok(successResponse);
     } catch (Exception e) {
-        ApiResponse<userResponseDto> errorResponse = new ApiResponse<>(
+        ApiResponse<UserDto> errorResponse = new ApiResponse<>(
             "error",
             e.getMessage(),
             null

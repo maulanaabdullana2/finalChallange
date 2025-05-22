@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.codeid.eshopay_backend.model.dto.CartItemDto;
-import com.codeid.eshopay_backend.model.dto.CartItemDtoResponse;
 import com.codeid.eshopay_backend.model.entity.Cart;
 import com.codeid.eshopay_backend.model.entity.CartItems;
 import com.codeid.eshopay_backend.model.entity.Product;
@@ -31,16 +30,16 @@ public class CartItemsServiceImpl implements CartItemsService {
     private final CartItemRepository cartItemRepository;
     private final productRepository productRepository;
     private final userRepository userRepository;
+public static CartItemDto mapDto(CartItems cartItems) {
+    return CartItemDto.builder()
+            .cartItemId(cartItems.getCartItemId())
+            .productId(cartItems.getProduct() != null ? cartItems.getProduct().getProductId() : null) // <- Tambah ini
+            .product(productServiceImpl.mapToDto(cartItems.getProduct()))
+            .quantity(cartItems.getQuantity())
+            .build();
+}
 
-    public static CartItemDtoResponse mapDto(CartItems cartItems) {
-        return CartItemDtoResponse.builder()
-                .cartItemId(cartItems.getCartItemId())
-                .product(productServiceImpl.mapToDto(cartItems.getProduct()))
-                .quantity(cartItems.getQuantity())
-                .build();
-    }
-
-    public static CartItems mapToEntity(CartItemDtoResponse cartItemDto) {
+    public static CartItems mapToEntity(CartItemDto cartItemDto) {
         return CartItems.builder()
                 .cartItemId(cartItemDto.getCartItemId())
                 .product(productServiceImpl.mapToEntity(cartItemDto.getProduct()))
@@ -75,7 +74,7 @@ public class CartItemsServiceImpl implements CartItemsService {
 
     @Override
     @Transactional
-    public CartItemDtoResponse addCartItem(Long userId, Long productId, long quantity) {
+    public CartItemDto addCartItem(Long userId, Long productId, long quantity) {
         Cart cart = cartRepsoitory.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("Cart not found for user with id: " + userId));
         Product product = productRepository.findById(productId)
@@ -101,7 +100,7 @@ public class CartItemsServiceImpl implements CartItemsService {
     }
 
     @Override
-    public List<CartItemDtoResponse> getAllCartItemsByUser(Long userId) {
+    public List<CartItemDto> getAllCartItemsByUser(Long userId) {
         Cart cart = cartRepsoitory.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("Cart not found for userId: " + userId));
 
@@ -113,7 +112,7 @@ public class CartItemsServiceImpl implements CartItemsService {
     }
 
     @Override
-    public CartItemDtoResponse getCartByIdAndUserId(Long cartItemId, Long userId) {
+    public CartItemDto getCartByIdAndUserId(Long cartItemId, Long userId) {
         return cartItemRepository.findByCartItemIdAndUserId(cartItemId, userId)
                 .map(CartItemsServiceImpl::mapDto)
                 .orElseThrow(() -> new EntityNotFoundException(

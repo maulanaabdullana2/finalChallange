@@ -1,9 +1,6 @@
 package com.codeid.eshopay_backend.model.dto;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-
 import com.codeid.eshopay_backend.model.enumeration.EnumTypeBank;
 
 import lombok.AllArgsConstructor;

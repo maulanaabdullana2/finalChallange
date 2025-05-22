@@ -2,7 +2,11 @@ package com.codeid.eshopay_backend.service.implementation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
+
+import com.codeid.eshopay_backend.model.dto.OrderDetailDto;
 import com.codeid.eshopay_backend.model.dto.OrderDto;
 import com.codeid.eshopay_backend.model.entity.Bank;
 import com.codeid.eshopay_backend.model.entity.CartItems;
@@ -33,7 +37,6 @@ public class OrderServiceImpl implements OrderService {
     public final productRepository productRepository;
     private final CartItemRepository cartItemRepository;
 
-
     public static OrderDto mapToDto(Order order) {
         return OrderDto.builder()
                 .orderId(order.getOrderId())
@@ -53,6 +56,11 @@ public class OrderServiceImpl implements OrderService {
                 .userId(order.getUser().getUserId())
                 .locationId(order.getLocation().getLocationId())
                 .bankCode(order.getBank().getBankCode())
+                .orderDetails(order.getOrderDetails() != null
+                        ? order.getOrderDetails().stream()
+                                .map(OrderServiceImpl::mapToOrderDetailDto)
+                                .collect(Collectors.toList())
+                        : null)
                 .build();
     }
 
@@ -75,6 +83,16 @@ public class OrderServiceImpl implements OrderService {
                 .user(User.builder().userId(orderDto.getUserId()).build())
                 .location(Location.builder().locationId(orderDto.getLocationId()).build())
                 .bank(Bank.builder().bankCode(orderDto.getBankCode()).build())
+                .build();
+    }
+
+    private static OrderDetailDto mapToOrderDetailDto(OrderDetail detail) {
+        return OrderDetailDto.builder()
+                .orderId( detail.getOrder().getOrderId())
+                .productId(detail.getProduct().getProductId())
+                .price(detail.getPrice())
+                .quantity(detail.getQuantity())
+                .discount(detail.getDiscount())
                 .build();
     }
 
@@ -108,49 +126,62 @@ public class OrderServiceImpl implements OrderService {
         throw new UnsupportedOperationException("Unimplemented method 'delete'");
     }
 
-   @Override
-public OrderDto createOrder(OrderDto orderDto, Long userId) {
-   
-    Order order = mapToEntity(orderDto);
+    @Override
+    public OrderDto createOrder(OrderDto orderDto, Long userId) {
 
-    User user = userRepository.findById(userId)
-        .orElseThrow(() -> new RuntimeException("User not found"));
+        Order order = mapToEntity(orderDto);
 
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-    order.setUser(user);
+        order.setUser(user);
 
-    Bank bank = bankRepository.findById(orderDto.getBankCode())
-        .orElseThrow(() -> new RuntimeException("Bank not found"));
-    order.setBank(bank);
+        Bank bank = bankRepository.findById(orderDto.getBankCode())
+                .orElseThrow(() -> new RuntimeException("Bank not found"));
+        order.setBank(bank);
 
-    List<CartItems> cartItems = cartItemRepository.findByCartUserUserId(userId);
+        List<CartItems> cartItems = cartItemRepository.findByCartUserUserId(userId);
 
-    List<OrderDetail> orderEntities = new ArrayList<>();
+        List<OrderDetail> orderEntities = new ArrayList<>();
 
-    for (CartItems cartItem : cartItems) {
-         Product product = cartItem.getProduct();
+        for (CartItems cartItem : cartItems) {
+            Product product = cartItem.getProduct();
 
-        OrderDetail orderDetail = new OrderDetail();
-        orderDetail.setOrder(order);
-        orderDetail.setProduct(product);
+            OrderDetail orderDetail = new OrderDetail();
+            orderDetail.setOrder(order);
+            orderDetail.setProduct(product);
 
-        OrderDetailId orderDetailId = new OrderDetailId();
-        orderDetailId.setOrderId(order.getOrderId()); 
-        orderDetailId.setProductId(product.getProductId());
-        orderDetail.setId(orderDetailId);
-        orderDetail.setPrice(cartItem.getUnitPrice());
-        orderDetail.setQuantity(cartItem.getQuantity());
-        orderDetail.setDiscount(cartItem.getDiscount());
-        orderEntities.add(orderDetail);
+            OrderDetailId orderDetailId = new OrderDetailId();
+            orderDetailId.setOrderId(order.getOrderId());
+            orderDetailId.setProductId(product.getProductId());
+            orderDetail.setId(orderDetailId);
+            orderDetail.setPrice(cartItem.getUnitPrice());
+            orderDetail.setQuantity(cartItem.getQuantity());
+            orderDetail.setDiscount(cartItem.getDiscount());
+            orderEntities.add(orderDetail);
+        }
+
+        // //delet cart nya kalo udh di create
+        // cartItemRepository.deleteAllByCartUserUserId(userId);
+
+        order.setOrderDetails(orderEntities);
+        Order savedOrder = orderRepository.save(order);
+
+        return mapToDto(savedOrder);
     }
 
-    // //delet cart nya kalo udh di create
-    // cartItemRepository.deleteAllByCartUserUserId(userId);
+    @Override
+    public List<OrderDto> getOrderByUserId(Long userId) {
+        List<Order> orders = orderRepository.findByUserUserId(userId);
+        return orders.stream()
+                .map(OrderServiceImpl::mapToDto)
+                .collect(Collectors.toList());
+    }
 
-    order.setOrderDetails(orderEntities);
-    Order savedOrder = orderRepository.save(order);
-
-    return mapToDto(savedOrder);
-}
+    @Override
+    public OrderDto getOrderByOrderId(Long orderId, Long userid) {
+        Order order = orderRepository.findByOrderIdAndUserUserId(orderId, userid);
+        return mapToDto(order);
+    }
 
 }
