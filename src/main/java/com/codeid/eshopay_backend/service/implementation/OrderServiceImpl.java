@@ -74,7 +74,7 @@ public class OrderServiceImpl implements OrderService {
                 .refNo(orderDto.getRefNo())
                 .user(User.builder().userId(orderDto.getUserId()).build())
                 .location(Location.builder().locationId(orderDto.getLocationId()).build())
-                .Bank(Bank.builder().bankCode(orderDto.getBankCode()).build())
+                .bank(Bank.builder().bankCode(orderDto.getBankCode()).build())
                 .build();
     }
 

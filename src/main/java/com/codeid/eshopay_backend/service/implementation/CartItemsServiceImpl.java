@@ -20,7 +20,6 @@ import com.codeid.eshopay_backend.repository.userRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import lombok.var;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

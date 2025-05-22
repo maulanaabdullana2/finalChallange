@@ -69,7 +69,7 @@ public class Order {
 
     @ManyToOne
     @JoinColumn(name = "bank_code")
-    private Bank Bank;
+    private Bank bank;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
