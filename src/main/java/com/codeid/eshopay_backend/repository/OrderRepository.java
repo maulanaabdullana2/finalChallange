@@ -11,7 +11,6 @@ import com.codeid.eshopay_backend.model.entity.Order;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
-    @Query ("SELECT o FROM Order o WHERE o.user.id = :userId")
     List<Order> findByUserUserId(Long userId);
 
     @Query("SELECT o FROM Order o WHERE o.orderId = :orderId AND o.user.userId = :userId")

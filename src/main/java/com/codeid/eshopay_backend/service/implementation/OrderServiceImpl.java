@@ -23,6 +23,7 @@ import com.codeid.eshopay_backend.repository.productRepository;
 import com.codeid.eshopay_backend.repository.userRepository;
 import com.codeid.eshopay_backend.service.OrderService;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -88,7 +89,7 @@ public class OrderServiceImpl implements OrderService {
 
     private static OrderDetailDto mapToOrderDetailDto(OrderDetail detail) {
         return OrderDetailDto.builder()
-                .orderId( detail.getOrder().getOrderId())
+                .orderId(detail.getOrder().getOrderId())
                 .productId(detail.getProduct().getProductId())
                 .price(detail.getPrice())
                 .quantity(detail.getQuantity())
@@ -127,30 +128,37 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public OrderDto createOrder(OrderDto orderDto, Long userId) {
 
         Order order = mapToEntity(orderDto);
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-
         order.setUser(user);
 
         Bank bank = bankRepository.findById(orderDto.getBankCode())
                 .orElseThrow(() -> new RuntimeException("Bank not found"));
         order.setBank(bank);
 
-        List<CartItems> cartItems = cartItemRepository.findByCartUserUserId(userId);
+        List<CartItems> selectedItems = cartItemRepository.findByCartUserUserIdAndStatus(userId, "SELECTED");
+
+        if (selectedItems.isEmpty()) {
+            List<CartItems> allItems = cartItemRepository.findByCartUserUserId(userId);
+            if (allItems.size() == 1) {
+                selectedItems = allItems;
+            } else {
+                throw new RuntimeException("Cannot create order: no selected items in cart");
+            }
+        }
 
         List<OrderDetail> orderEntities = new ArrayList<>();
 
-        for (CartItems cartItem : cartItems) {
+        for (CartItems cartItem : selectedItems) {
             Product product = cartItem.getProduct();
-
             OrderDetail orderDetail = new OrderDetail();
             orderDetail.setOrder(order);
             orderDetail.setProduct(product);
-
             OrderDetailId orderDetailId = new OrderDetailId();
             orderDetailId.setOrderId(order.getOrderId());
             orderDetailId.setProductId(product.getProductId());
@@ -159,10 +167,8 @@ public class OrderServiceImpl implements OrderService {
             orderDetail.setQuantity(cartItem.getQuantity());
             orderDetail.setDiscount(cartItem.getDiscount());
             orderEntities.add(orderDetail);
+            cartItemRepository.delete(cartItem);
         }
-
-        // //delet cart nya kalo udh di create
-        // cartItemRepository.deleteAllByCartUserUserId(userId);
 
         order.setOrderDetails(orderEntities);
         Order savedOrder = orderRepository.save(order);

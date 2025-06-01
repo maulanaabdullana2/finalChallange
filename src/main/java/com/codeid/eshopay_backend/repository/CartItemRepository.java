@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -12,17 +13,20 @@ import com.codeid.eshopay_backend.model.entity.Cart;
 import com.codeid.eshopay_backend.model.entity.CartItems;
 import com.codeid.eshopay_backend.model.entity.Product;
 
+import jakarta.transaction.Transactional;
 
 @Repository
 public interface CartItemRepository extends JpaRepository<CartItems, Long> {
-    @Query("SELECT ci FROM CartItems ci WHERE ci.cart = :cart AND ci.product = :product")
-    Optional<CartItems> findByCartAndProduct(@Param("cart") Cart cart, @Param("product") Product product);
 
-    @Query("SELECT ci FROM CartItems ci WHERE ci.cartItemId = :cartItemId AND ci.cart.user.userId = :userId")
-    Optional<CartItems> findByCartItemIdAndUserId(@Param("cartItemId") Long cartItemId, @Param("userId") Long userId);
-
-    @Query("SELECT ci FROM CartItems ci WHERE ci.cart = :cart")
-    List<CartItems> findByCart(Cart cart);
+    Optional<CartItems> findByCartAndProduct(Cart cart, Product product);
 
     List<CartItems> findByCartUserUserId(Long userId);
+
+    
+    List<CartItems> findByCartUserUserIdAndStatus(Long userId, String string);
+
+    
+    @Modifying
+    @Query("DELETE FROM CartItems c WHERE c.cart.cartId = :cartId AND c.product.productId = :productId")
+    void deleteByCartIdAndProductId(@Param("cartId") Long cartId, @Param("productId") Long productId);
 }

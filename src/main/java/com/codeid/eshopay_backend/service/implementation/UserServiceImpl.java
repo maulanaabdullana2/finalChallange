@@ -92,9 +92,13 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("User already exists");
         }
         User userEntity = new User();
+
         userEntity.setUserEmail(userDto.getUserEmail());
+
         userEntity.setUserPassword(passwordEncoder.encode(userDto.getUserPassword()));
+
         userEntity.setUserPhone(userDto.getUserPhone());
+        
         User savedUser = userRepository.save(userEntity);
         Cart cart = new Cart();
 
