@@ -11,12 +11,13 @@ import org.springframework.stereotype.Repository;
 
 import com.codeid.eshopay_backend.model.entity.Cart;
 import com.codeid.eshopay_backend.model.entity.CartItems;
+import com.codeid.eshopay_backend.model.entity.CartItemsId;
 import com.codeid.eshopay_backend.model.entity.Product;
 
 import jakarta.transaction.Transactional;
 
 @Repository
-public interface CartItemRepository extends JpaRepository<CartItems, Long> {
+public interface CartItemRepository extends JpaRepository<CartItems, CartItemsId> {
 
     Optional<CartItems> findByCartAndProduct(Cart cart, Product product);
 
